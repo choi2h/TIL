@@ -152,8 +152,46 @@ enter des-ede3-cbc encryption password:
 <br/>
 <br/>
 
-## JAVA 프로젝트에 적용하기
+## Spring 프로젝트에 적용하기
 
+### keystore 발급
+1. keytool을 이용하여 keystore 생성  
+`keytool -genkey –alias [keystore 별칭] –keyalg RSA –storetype [PKCS12/JKS/JCEKS] –keystore [keystore 파일명]`
+![create_keystore](./img/create_keystore.png)
+
+
+    > keytool이란?  
+    > JDK에서 제공하는 keystore 관리용 툴  
+    > 개인키, 공개키 및 자신이 권한을 부여한 인증서 및 자료의 보장, 전자서명에 의한 인증 관리  
+    > 생성된 키와 인증서는 keystore라는 곳에 저장하여 파일로 구현  
+    > 경로 : /usr/local/java/bin/keytool
+
+2. keystore에서 인증서 추출
+keystore : 본인의 인증서 및 개인키(private key)  
+`keytool –export –alias [keystore 별칭] –keystore [keystore 파일명] –rfc –file [인증서 파일명]`
+![keystore](./img/keystore.png)
+
+3. trust-store 생성
+trust-store : 신뢰하는 상대방의 root ca 인증서 보관  
+`keytool -import –alias [trust keystore 별칭] –file [인증서 파일] –keystore [trust keystore 파일명]`
+![create_trust_store](./img/create_trust_store.png)
+
+4. 프로젝트의 application.properties에 아래 설정값 추가
+    ```properties
+    server.port = 443
+
+    server.ssl.enable = true
+    server.ssl.key-store = [keystore file]
+    server.ssl.key-store-type = [keystore type]
+    server.ssl.key-store-password = [keystore password]
+    server.ssl.key-alias = [keystore alias]
+    server.ssl.key-password = [key password]
+    server.ssl.trust-store = [trust keystore file]
+    server.ssl.trust-sotre-password = [trust keystore password]
+    ```
+
+5. 프로젝트 실행
+![create_trust_store](./img/start_project.png)
 
 <br/>
 <br/>
